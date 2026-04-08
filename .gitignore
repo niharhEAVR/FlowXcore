@@ -46,4 +46,6 @@ next-env.d.ts
 .env.sentry-build-plugin
 
 
+# by me
 /public/needed
+/assets_needed_for_this_project

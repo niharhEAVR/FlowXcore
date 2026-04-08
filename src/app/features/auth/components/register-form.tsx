@@ -9,23 +9,12 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
-
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardAction, CardFooter } from "@/components/ui/card"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Label } from "@/components/ui/label"
-
-
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { auth } from "@/lib/auth"
-import { cn } from "@/lib/utils"
-
 import { authClient } from "@/lib/auth-client"
-
 import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
-
-
 
 const registerSchema = z.object({
     name: z.string().min(1, "Please your name").optional(),
@@ -36,7 +25,6 @@ const registerSchema = z.object({
     message: "Password don't matched",
     path: ["confirmPassword"]
 })
-
 
 type registerFormValues = z.infer<typeof registerSchema>
 
@@ -52,7 +40,6 @@ export function RegisterForm() {
             confirmPassword: "",
         },
     })
-
 
     const onSubmit = async (values: registerFormValues) => {
         await authClient.signUp.email({
@@ -70,12 +57,9 @@ export function RegisterForm() {
         })
     }
 
-
-
     const isPending = form.formState.isSubmitting;
 
     const [showPassword, setShowPassword] = useState(false)
-
 
     return (
         <div className="flex flex-col gap-6 ">
@@ -85,10 +69,8 @@ export function RegisterForm() {
                     <CardDescription>
                         Register to to get started
                     </CardDescription>
-                    {/* <CardAction>
-                        <Button variant="link">Sign Up</Button>
-                    </CardAction> */}
                 </CardHeader>
+
                 <CardContent>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -164,10 +146,6 @@ export function RegisterForm() {
                                         )}
                                     />
 
-
-
-
-
                                     <FormField
                                         control={form.control}
                                         name="confirmPassword"
@@ -218,6 +196,4 @@ export function RegisterForm() {
 
         </div>
     )
-
-
 }

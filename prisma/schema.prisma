@@ -13,7 +13,7 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
+model User { // this table came from better-auth, you can remove it if you are not using better-auth
   id            String    @id
   name          String
   email         String
@@ -28,7 +28,7 @@ model User {
   @@map("user")
 }
 
-model Session {
+model Session { // this table came from better-auth, you can remove it if you are not using better-auth
   id        String   @id
   expiresAt DateTime
   token     String
@@ -44,7 +44,7 @@ model Session {
   @@map("session")
 }
 
-model Account {
+model Account { // this table came from better-auth, you can remove it if you are not using better-auth
   id                    String    @id
   accountId             String
   providerId            String
@@ -64,7 +64,7 @@ model Account {
   @@map("account")
 }
 
-model Verification {
+model Verification { // this table came from better-auth, you can remove it if you are not using better-auth
   id         String   @id
   identifier String
   value      String

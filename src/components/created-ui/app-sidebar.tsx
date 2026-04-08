@@ -64,7 +64,7 @@ const AppSidebar = () => {
                     <SidebarMenuButton asChild
                         className="gap-x-4 h-10 px-4">
                         <Link prefetch href={"/workflows"}>
-                            <Image src={"/logo.svg"} alt="nodebase" height={30} width={30}></Image><span className="font-semibold text-sm">Nodebase</span></Link>
+                            <Image src={"/logo.svg"} alt="flowXcore" height={30} width={30}></Image><span className="font-semibold text-sm">FlowXcore</span></Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
             </SidebarHeader>

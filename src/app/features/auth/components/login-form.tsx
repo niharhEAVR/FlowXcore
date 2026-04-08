@@ -1,6 +1,5 @@
 "use client"
 
-
 import { zodResolver } from "@hookform/resolvers/zod"
 import Image from "next/image"
 import Link from "next/link"
@@ -9,30 +8,17 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardAction, CardFooter } from "@/components/ui/card"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Label } from "@/components/ui/label"
-
-
-
-
+import { Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { auth } from "@/lib/auth"
-import { cn } from "@/lib/utils"
-
 import { authClient } from "@/lib/auth-client"
-
 import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
-
-
 
 const loginSchema = z.object({
     email: z.string().email("Please enter a valid email"),
     password: z.string().min(5, "Password is required"),
 })
-
 
 type loginFormValues = z.infer<typeof loginSchema>
 
@@ -46,7 +32,6 @@ export function LoginForm() {
             password: "",
         },
     })
-
 
     const onSubmit = async (values: loginFormValues) => {
         await authClient.signIn.email({
@@ -63,12 +48,9 @@ export function LoginForm() {
         })
     }
 
-
-
     const isPending = form.formState.isSubmitting;
 
     const [showPassword, setShowPassword] = useState(false)
-
 
     return (
         <div className="flex flex-col gap-6 ">
@@ -78,10 +60,8 @@ export function LoginForm() {
                     <CardDescription>
                         Login to Continue
                     </CardDescription>
-                    {/* <CardAction>
-                        <Button variant="link">Sign Up</Button>
-                    </CardAction> */}
                 </CardHeader>
+
                 <CardContent>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -94,6 +74,7 @@ export function LoginForm() {
                                         <Image alt="google" src={"/google.svg"} height={20} width={20} />
                                         Continue With Google</Button>
                                 </div>
+
                                 <div className="relative flex items-center">
                                     <div className="grow border-t border-black" />
                                     <span className="mx-4 text-muted-foreground">or</span>
@@ -118,10 +99,6 @@ export function LoginForm() {
                                             </FormItem>
                                         )}
                                     />
-
-
-
-
 
                                     <FormField
                                         control={form.control}
@@ -156,21 +133,11 @@ export function LoginForm() {
                                         )}
                                     />
 
-
-
-
-
-
-
-
-
-
-
-
                                     <Button type="submit" className="w-full" disabled={isPending}>
                                         Login
                                     </Button>
                                 </div>
+
                                 <div className="text-center text-sm">
                                     Don't have an account?{" "}
                                     <Link href={"/signup"} className="hover:underline underline-offset-4">
@@ -182,9 +149,6 @@ export function LoginForm() {
                     </Form>
                 </CardContent>
             </Card>
-
         </div>
     )
-
-
 }

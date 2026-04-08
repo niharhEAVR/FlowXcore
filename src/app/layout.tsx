@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nodebase",
+  title: "FlowXcore",
   description: "Personal Automation Workflows",
 };
 
@@ -30,9 +30,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <TRPCReactProvider>
+        <TRPCReactProvider> {/* Add the trpc globally, otherwise it won't work */ }
         {children}
-        <Toaster/>
+        <Toaster/> {/* Add the toaster globally, otherwise it won't work */ }
         </TRPCReactProvider>
       </body>
     </html>
