@@ -1,11 +1,9 @@
 import { inngest } from "./client";
 
-import prisma from "@/lib/prisma";
-
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateText } from 'ai';
 
-const google = createGoogleGenerativeAI()
+const google = createGoogleGenerativeAI() // its actually a factory function that creates a client instance for you to use. You can create multiple clients with different configurations if needed. and it also uses the api key from your environment variables to authenticate requests.
 
 export const executeAi = inngest.createFunction(
   { id: "execute-ai" },

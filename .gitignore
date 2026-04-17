@@ -49,3 +49,5 @@ next-env.d.ts
 # by me
 /public/needed
 /assets_needed_for_this_project
+
+mprocs.log
