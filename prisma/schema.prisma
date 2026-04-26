@@ -76,8 +76,6 @@ model Verification { // this table came from better-auth, you can remove it if y
   @@map("verification")
 }
 
-
-
 model Workflow {
   id String @id @default(cuid())
   name String
