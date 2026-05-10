@@ -23,6 +23,7 @@ model User { // this table came from better-auth, you can remove it if you are n
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  workflows     Workflow[]
 
   @@unique([email])
   @@map("user")
@@ -79,4 +80,9 @@ model Verification { // this table came from better-auth, you can remove it if y
 model Workflow {
   id String @id @default(cuid())
   name String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
