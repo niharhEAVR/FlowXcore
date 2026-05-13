@@ -19,7 +19,7 @@ export function useEntitySearch<T extends {
   debounceMs = 500
 }: UseEntitySearchProps<T>) {
 
-    
+
   const [localSearch, setLocalSearch] = useState(params.search);
 
   useEffect(() => {
@@ -54,3 +54,8 @@ export function useEntitySearch<T extends {
     onSearchChange: setLocalSearch,
   };
 };
+
+
+// this whole function work is to handle the search input and debounce it, so that we don't make a request on every keystroke. It also resets the page to 1 when the search query changes.
+
+// and its only changes the NUQS params, and NUQS params are used in the server router to fetch the data, so when the params change, the data will be refetched with the new params.
