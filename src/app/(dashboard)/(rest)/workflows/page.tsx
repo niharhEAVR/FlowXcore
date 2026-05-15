@@ -8,13 +8,13 @@ import {
     WorkflowsLoading,
     WorkflowsContainer,
     WorkflowsError
-} from "@/app/features/workflows/components/workflows";
+} from "@/features/workflows/components/workflows";
 
 import { Suspense } from "react";
-import { prefetchWorkflows } from "@/app/features/workflows/server/prefetch";
+import { prefetchWorkflows } from "@/features/workflows/server/prefetch";
 
 import { SearchParams } from "nuqs/server";
-import { workflowsParamsLoader } from "@/app/features/workflows/server/params-loader";
+import { workflowsParamsLoader } from "@/features/workflows/server/params-loader";
 
 
 type Props = {
