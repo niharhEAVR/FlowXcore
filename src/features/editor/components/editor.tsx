@@ -21,6 +21,7 @@ import {
   Panel,
 } from '@xyflow/react';
 import { nodeComponents } from '@/config/node-components';
+import { AddNodeButton } from "./add-node-button";
 
 
 
@@ -31,6 +32,7 @@ export const EditorLoading = () => {
 export const EditorError = () => {
   return <ErrorView message="Error loading editor" />;
 };
+
 
 export const Editor = ({ workflowId }: { workflowId: string }) => {
 
@@ -71,12 +73,12 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
           nodeTypes={nodeComponents}
           fitView
           proOptions={{
-            hideAttribution: true,
+            hideAttribution: true, // Hide the "Powered by React Flow" attribution or logo.
           }}
           colorMode={colorMode}
         >
 
-          <Panel position="top-right">
+          <Panel position="top-left">
             <select
               className={`xy-theme__select ${colorMode === 'dark' ? 'text-amber-50 bg-black' : 'text-black bg-white'
                 }`}
@@ -84,9 +86,14 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
               data-testid="colormode-select"
             >
               <option value="dark">Dark</option>
-              <option value="light">light</option>
+              <option value="light">Light</option>
             </select>
           </Panel>
+
+          <Panel position="top-right">
+            <AddNodeButton />
+          </Panel>
+        
           <Background />
           <Controls />
           <MiniMap />

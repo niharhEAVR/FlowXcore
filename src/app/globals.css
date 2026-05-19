@@ -3,7 +3,7 @@
 
 @layer base {
   @import "@xyflow/react/dist/style.css";
-}
+} /* this added here because of the react-flow  */
 
 @custom-variant dark (&:is(.dark *));
 
