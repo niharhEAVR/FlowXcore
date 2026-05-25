@@ -1,6 +1,7 @@
 // it auto generated from npx shadcn@latest add https://ui.reactflow.dev/placeholder-node
 
 import type { ComponentProps, HTMLAttributes } from "react";
+import { forwardRef } from "react";
 
 import { cn } from "@/lib/utils";
 import { NodeStatus } from "./node-status-indicator";
@@ -11,9 +12,13 @@ interface BaseNodeProps extends HTMLAttributes<HTMLDivElement> {
   status?: NodeStatus;
 };
 
-export function BaseNode({ className, status, ...props }: BaseNodeProps) {
+export const BaseNode = forwardRef<
+  HTMLDivElement,
+  BaseNodeProps
+>(({ className, status, ...props }, ref) => {
   return (
     <div
+      ref={ref}
       className={cn(
         "bg-card text-card-foreground relative rounded-sm border border-muted-foreground hover:bg-accent",
         className,
@@ -33,7 +38,7 @@ export function BaseNode({ className, status, ...props }: BaseNodeProps) {
       )}
     </div>
   );
-}
+})
 
 /**
  * A container for a consistent header layout intended to be used inside the
