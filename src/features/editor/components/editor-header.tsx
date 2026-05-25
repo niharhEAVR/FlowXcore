@@ -17,11 +17,15 @@ import Link from "next/link";
 
 import { Input } from "@/components/ui/input";
 import { useEffect, useRef, useState } from "react";
-import { useSuspenseWorkflow } from "@/features/workflows/hooks/use-workflows";
 import { useUpdateWorkflowName } from "@/features/workflows/hooks/use-workflows";
 
+import { useSuspenseWorkflow, useUpdateWorkflow } from "@/features/workflows/hooks/use-workflows";
 
-export const EditorHeader = ({workflowId}:{workflowId: string}) => {
+import { useAtomValue } from "jotai";
+import { editorAtom } from "../store/atoms";
+import { toast } from "sonner";
+
+export const EditorHeader = ({ workflowId }: { workflowId: string }) => {
 
   return (
     <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4 bg-background">
@@ -56,9 +60,30 @@ export const EditorBreadcrumbs = ({ workflowId }: { workflowId: string }) => {
 
 export const EditorSaveButton = ({ workflowId }: { workflowId: string }) => {
 
+  const editor = useAtomValue(editorAtom);
+  const saveWorkflow = useUpdateWorkflow();
+
+  const handleSave = async () => {
+    if (!editor) return;
+
+    try {
+      const nodes = editor.getNodes();
+      const edges = editor.getEdges();
+
+      await saveWorkflow.mutateAsync({
+        id: workflowId,
+        nodes,
+        edges,
+      });
+    } catch (error) {
+      toast.error("Failed to save workflow");
+      console.error("Failed to save workflow:", error);
+    }
+  };
+
   return (
     <div className="ml-auto">
-      <Button size="sm" onClick={()=>{}} disabled={false}>
+      <Button size="sm" onClick={handleSave} disabled={saveWorkflow.isPending}>
         <SaveIcon className="size-4" />
         Save
       </Button>
