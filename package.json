@@ -64,6 +64,7 @@
     "inngest": "^3.54.2",
     "input-otp": "^1.4.2",
     "jotai": "^2.20.0",
+    "ky": "^2.0.2",
     "lucide-react": "^0.561.0",
     "next": "^16.2.6",
     "next-themes": "^0.4.6",
@@ -81,6 +82,7 @@
     "sonner": "^2.0.7",
     "superjson": "^2.2.6",
     "tailwind-merge": "^3.4.0",
+    "toposort": "^2.0.2",
     "vaul": "^1.1.2",
     "zod": "^4.3.6"
   },
@@ -91,6 +93,7 @@
     "@types/pg": "^8.16.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/toposort": "^2.0.7",
     "inngest-cli": "^1.15.1",
     "mprocs": "^0.7.3",
     "prisma": "^7.8.0",
