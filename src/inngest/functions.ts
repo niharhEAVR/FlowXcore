@@ -1,27 +1,51 @@
+import { NonRetriableError } from "inngest";
 import { inngest } from "./client";
+import prisma from "@/lib/prisma";
+import { NodeType } from "@/generated/enums";
 
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import { generateText } from 'ai';
+import { topologicalSort } from "./utils";
+import { getExecutor } from "@/features/executions/lib/executor-registry";
 
-const google = createGoogleGenerativeAI() // its actually a factory function that creates a client instance for you to use. You can create multiple clients with different configurations if needed. and it also uses the api key from your environment variables to authenticate requests.
-
-export const executeAi = inngest.createFunction(
-  { id: "execute-ai" },
-  { event: "execute/ai" },
+export const executeWorkflow = inngest.createFunction(
+  { id: "execute-workflow" },
+  { event: "workflows/execute.workflow" },
   async ({ event, step }) => {
-    const { steps } = await step.ai.wrap("gemini-generated-text",
-      generateText,
-      {
-        model: google('gemini-2.5-flash'),
-        system: 'You are a helpful assistant',
-        prompt: 'What is 2+2?',
-        experimental_telemetry: {
-          isEnabled: true,
-          recordInputs: true,
-          recordOutputs: true,
+    
+    const workflowId = event.data.workflowId;
+
+    if (!workflowId) {
+      throw new NonRetriableError("Workflow ID is missing");
+    }
+
+    const sortedNodes = await step.run("prepare-workflow", async () => {
+      const workflow = await prisma.workflow.findUniqueOrThrow({
+        where: { id: workflowId },
+        include: {
+          nodes: true,
+          connections: true,
         },
-      }
-    );
-    return steps;
+      });
+
+      return topologicalSort(workflow.nodes, workflow.connections);
+    });
+
+    // Initialize context with any initial data from the trigger
+    let context = event.data.initialData || {};
+
+    // Execute each node
+    for (const node of sortedNodes) {
+      const executor = getExecutor(node.type as NodeType);
+      context = await executor({
+        data: node.data as Record<string, unknown>,
+        nodeId: node.id,
+        context,
+        step,
+      });
+    }
+
+    return {
+      workflowId,
+      result: context,
+    };
   },
 );

@@ -26,6 +26,10 @@ import { AddNodeButton } from "./add-node-button";
 import { useSetAtom } from "jotai";
 import { editorAtom } from "../store/atoms";
 
+import { useMemo } from "react";
+import { NodeType } from "@/generated/enums";
+import { ExecuteWorkflowButton } from "./execute-workflow-button";
+
 
 
 export const EditorLoading = () => {
@@ -65,6 +69,9 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
     setColorMode(evt.target.value as ColorMode);
   };
 
+  const hasManualTrigger = useMemo(() => {
+    return nodes.some((node) => node.type === NodeType.MANUAL_TRIGGER);
+  }, [nodes]);
 
   return (
     <div className="flex flex-col h-full w-full">
@@ -107,7 +114,12 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
           <Panel position="top-right">
             <AddNodeButton />
           </Panel>
-        
+          {hasManualTrigger && (
+            <Panel position="bottom-center">
+              <ExecuteWorkflowButton workflowId={workflowId} />
+            </Panel>
+          )}
+
           <Background />
           <Controls />
           <MiniMap />
