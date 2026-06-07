@@ -4,13 +4,30 @@ import { BaseTriggerNode } from "../base-trigger-node";
 import { MousePointerIcon } from "lucide-react";
 import { ManualTriggerDialog } from "./dialog";
 
+import { useParams } from "next/navigation";
+import { manualTriggerChannel } from "@/inngest/channels/manual-trigger";
+import { getRealtimeToken } from "./actions";
+import { useNodeStatus } from "@/features/executions/hooks/use-node-status";
+
 export const ManualTriggerNode = memo((props: NodeProps) => {
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleOpenSettings = () => setDialogOpen(true);
 
-  const nodeStatus = "loading";
+  const params = useParams();
+  const workflowId = params.workflowId as string;
+  const channel = manualTriggerChannel({
+    workflowId: workflowId,
+  });
+  const topics = ["status", "tokens"] as const;
+
+  const nodeStatus = useNodeStatus({
+    nodeId: props.id,
+    channel,
+    topics,
+    token: () => getRealtimeToken(workflowId),
+  });
 
   return (
     <>
