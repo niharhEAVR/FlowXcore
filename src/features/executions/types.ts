@@ -9,7 +9,7 @@ export interface NodeExecutorParams<TData = Record<string, unknown>> {
   nodeId: string;
   context: WorkflowContext;
   step: StepTools;
-  // publish: TODO Add realtime later
+  workflowId: string;
 };
 
 export type NodeExecutor<TData = Record<string, unknown>> = (

@@ -6,6 +6,11 @@ import { memo, useState } from "react";
 import { BaseExecutionNode } from "../base-execution-node";
 import { HttpRequestFormValues, HttpRequestDialog } from "./dialog";
 
+import { useNodeStatus } from "../../hooks/use-node-status";
+import { getRealtimeToken } from "./actions";
+import { httpRequestChannel } from "@/inngest/channels/http-request";
+import { useParams } from "next/navigation";
+
 type HttpRequestNodeData = {
   variableName?: string,
   endpoint?: string;
@@ -13,14 +18,30 @@ type HttpRequestNodeData = {
   body?: string;
 };
 
+
 type HttpRequestNodeType = Node<HttpRequestNodeData>;
 
 export const HttpRequestNode = memo((props: NodeProps<HttpRequestNodeType>) => {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const { setNodes } = useReactFlow();
+  const params = useParams();
 
-  const nodeStatus = "error";
+  const workflowId = params.workflowId as string;
+
+  const channel = httpRequestChannel({
+    workflowId: workflowId,
+  });
+
+  const topics = ["status"] as const;
+
+  const nodeStatus = useNodeStatus({
+    nodeId: props.id,
+    channel,
+    topics,
+    token: () => getRealtimeToken(workflowId),
+  });
+
 
   const handleOpenSettings = () => setDialogOpen(true);
 
