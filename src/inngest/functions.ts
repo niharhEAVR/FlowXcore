@@ -12,7 +12,7 @@ export const executeWorkflow = inngest.createFunction(
     triggers: [
       { event: "workflows/execute.workflow" },
     ],
-    retries: 0, // TODO: Remove this in production
+    retries: process.env.NODE_ENV === "production" ? 3 : 0,
   },
   async ({ event, step }) => {
 
