@@ -32,8 +32,14 @@ export async function POST(request: NextRequest) {
         googleForm: formData,
       },
     });
+
+    return NextResponse.json(
+      { success: true },
+      { status: 200 },
+    );
+
   } catch (error) {
-    console.error("Google form webhook error:" , error);
+    console.error("Google form webhook error:", error);
     return NextResponse.json(
       { success: false, error: "Failed to process Google Form submission" },
       { status: 500 },
@@ -41,4 +47,31 @@ export async function POST(request: NextRequest) {
   }
 };
 
-// This API route can be callabe by this url: /api/webhooks/google-form?workflowId=your_workflow_id
+// This API route can be called by this url: /api/webhooks/google-form?workflowId=your_workflow_id
+
+
+// this is what google form response look like
+/*
+{
+  "googleForm": {
+    "formId": "1ldju6A*********************",
+    "formTitle": "FlowXcore Test",
+    "raw": {
+      "formId": "1ldju6A*********************",
+      "formTitle": "FlowXcore Test",
+      "respondentEmail": "",
+      "responseId": "2_ABaOnu*******************************************",
+      "responses": {
+        "url": "https://jsonplaceholder.typicode.com/users/3"
+      },
+      "timestamp": "2026-06-09T07:01:08.180Z"
+    },
+    "respondentEmail": "",
+    "responseId": "2_ABaOnu*******************************************",
+    "responses": {
+      "url": "https://jsonplaceholder.typicode.com/users/3"
+    },
+    "timestamp": "2026-06-09T07:01:08.180Z"
+  }
+}
+*/
