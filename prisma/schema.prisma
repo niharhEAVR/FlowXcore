@@ -29,7 +29,7 @@ model User {
   @@map("user")
 }
 
-model Session { // Better auth
+model Session {
   id        String   @id
   expiresAt DateTime
   token     String
@@ -45,7 +45,7 @@ model Session { // Better auth
   @@map("session")
 }
 
-model Account { // Better auth
+model Account {
   id                    String    @id
   accountId             String
   providerId            String
@@ -65,7 +65,7 @@ model Account { // Better auth
   @@map("account")
 }
 
-model Verification { // Better auth
+model Verification {
   id         String   @id
   identifier String
   value      String
@@ -96,6 +96,10 @@ enum NodeType {
   HTTP_REQUEST
   GOOGLE_FORM_TRIGGER
   STRIPE_TRIGGER
+  ANTHROPIC
+  GEMINI
+  OPENAI
+  GROK
 }
 
 model Node {
