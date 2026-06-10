@@ -35,7 +35,7 @@ export const executeWorkflow = inngest.createFunction(
     });
 
     // Initialize context with any initial data from the trigger
-    let context = event.data.initialData || {};
+    let context = event.data.initialData || {}; // we should make this as a db model in the future, and store the initial trigger data there, and then we can also have a history of all the executions with their initial data, which can be useful for debugging and analytics
 
     // Execute each node
     for (const node of sortedNodes) {
