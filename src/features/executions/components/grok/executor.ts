@@ -4,7 +4,7 @@ import { generateText } from "ai";
 import { createXai } from '@ai-sdk/xai';
 import type { NodeExecutor } from "@/features/executions/types";
 import { grokChannel } from "@/inngest/channels/grok";
-
+import prisma from "@/lib/prisma";
 
 Handlebars.registerHelper("json", (context) => {
   const jsonString = JSON.stringify(context, null, 2);
@@ -15,6 +15,7 @@ Handlebars.registerHelper("json", (context) => {
 
 type GrokData = {
   variableName?: string;
+    credentialId?: string;
   systemPrompt?: string;
   userPrompt?: string;
 };
@@ -64,19 +65,32 @@ export const grokExecutor: NodeExecutor<GrokData> = async ({
     throw new NonRetriableError("Grok node: User prompt is missing");
   }
 
-  // TODO: Throw if credential is missing
-
+  if (!data.credentialId) {
+    await step.realtime.publish(
+      "status-error",
+      ch.status,
+      {
+        nodeId,
+        status: "error",
+      }
+    );
+    throw new NonRetriableError("Grok node: Credential is required");
+  }
   const systemPrompt = data.systemPrompt
     ? Handlebars.compile(data.systemPrompt)(context)
     : "You are a helpful assistant.";
   const userPrompt = Handlebars.compile(data.userPrompt)(context);
 
-  // TODO: Fetch credential that user selected
+   const credential = await step.run("get-credential", () => {
+    return prisma.credential.findUnique({
+      where: {
+        id: data.credentialId,
+      },
+    });
+  });
 
-  const credentialValue = process.env.XAI_API_KEY!;
-
-  if(!credentialValue) {
-      await step.realtime.publish(
+  if (!credential) {
+    await step.realtime.publish(
         "status-error",
         ch.status,
         {
@@ -84,11 +98,11 @@ export const grokExecutor: NodeExecutor<GrokData> = async ({
           status: "error",
         }
       );
-      throw new NonRetriableError("Grok node: API key is missing");
-    }
+    throw new NonRetriableError("Grok node: Credential not found");
+  }
 
   const grok = createXai({
-    apiKey: credentialValue,
+    apiKey: credential.value,
   });
 
 

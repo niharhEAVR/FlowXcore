@@ -16,6 +16,7 @@ type GrokNodeData = {
   endpoint?: string;
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: string;
+  credential?:string
 };
 
 
