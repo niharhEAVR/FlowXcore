@@ -16,6 +16,7 @@ type OpenAiNodeData = {
   endpoint?: string;
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: string;
+  credentialId?: string;
 };
 
 
