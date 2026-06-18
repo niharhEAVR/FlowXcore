@@ -26,6 +26,7 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
   context,
   step,
   workflowId,
+  userId,
 }) => {
 
   const ch = geminiChannel({
@@ -87,7 +88,8 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
     const credential = await step.run("get-credential", () => {
     return prisma.credential.findUnique({
       where: {
-        id: data.credentialId,
+        id: data.credentialId, // this can be injected
+        userId, // we need to make sure the credential belongs to the user executing the workflow, otherwise a attacker could use a credential that doesn't belong to them to exfiltrate data from the system
       },
     });
   });

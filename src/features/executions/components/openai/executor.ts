@@ -15,7 +15,7 @@ Handlebars.registerHelper("json", (context) => {
 
 type OpenAiData = {
   variableName?: string;
-    credentialId?: string;
+  credentialId?: string;
   systemPrompt?: string;
   userPrompt?: string;
 };
@@ -26,6 +26,7 @@ export const openAiExecutor: NodeExecutor<OpenAiData> = async ({
   context,
   step,
   workflowId,
+  userId,
 }) => {
 
   const ch = openaiChannel({
@@ -86,21 +87,22 @@ export const openAiExecutor: NodeExecutor<OpenAiData> = async ({
     return prisma.credential.findUnique({
       where: {
         id: data.credentialId,
+        userId,
       },
     });
   });
 
-  if(!credential) {
-      await step.realtime.publish(
-        "status-error",
-        ch.status,
-        {
-          nodeId,
-          status: "error",
-        }
-      );
-      throw new NonRetriableError("OpenAi node: API key is missing");
-    }
+  if (!credential) {
+    await step.realtime.publish(
+      "status-error",
+      ch.status,
+      {
+        nodeId,
+        status: "error",
+      }
+    );
+    throw new NonRetriableError("OpenAi node: API key is missing");
+  }
 
   const openai = createOpenAI({
     apiKey: credential.value,

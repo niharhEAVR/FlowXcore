@@ -26,6 +26,7 @@ export const grokExecutor: NodeExecutor<GrokData> = async ({
   context,
   step,
   workflowId,
+  userId,
 }) => {
 
   const ch = grokChannel({
@@ -85,6 +86,7 @@ export const grokExecutor: NodeExecutor<GrokData> = async ({
     return prisma.credential.findUnique({
       where: {
         id: data.credentialId,
+        userId,
       },
     });
   });
