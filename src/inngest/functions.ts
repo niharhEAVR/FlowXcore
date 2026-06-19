@@ -5,6 +5,7 @@ import { NodeType } from "@/generated/enums";
 
 import { topologicalSort } from "./utils";
 import { getExecutor } from "@/features/executions/lib/executor-registry";
+import { ExecutionStatus } from "@/generated/enums";
 
 export const executeWorkflow = inngest.createFunction(
   {
@@ -13,14 +14,50 @@ export const executeWorkflow = inngest.createFunction(
       { event: "workflows/execute.workflow" },
     ],
     retries: process.env.NODE_ENV === "production" ? 3 : 0,
+    onFailure: async ({ event }) => {
+      const execution = await prisma.execution.findUnique({
+        where: {
+          inngestEventId: event.data.event.id,
+        },
+      });
+
+      if (!execution) {
+        console.warn(
+          `Execution not found for event ${event.data.event.id}`
+        );
+        return;
+      }
+
+      return prisma.execution.update({
+        where: {
+          id: execution.id,
+        },
+        data: {
+          status: ExecutionStatus.FAILED,
+          error: event.data.error.message,
+          errorStack: event.data.error.stack,
+          completedAt: new Date(),
+        },
+      });
+    },
   },
   async ({ event, step }) => {
 
+    const inngestEventId = event.id;
     const workflowId = event.data.workflowId;
 
-    if (!workflowId) {
-      throw new NonRetriableError("Workflow ID is missing");
+    if (!inngestEventId || !workflowId) {
+      throw new NonRetriableError("Event Id or Workflow ID is missing");
     }
+
+    await step.run("create-execution", async () => {
+      return prisma.execution.create({
+        data: {
+          workflowId,
+          inngestEventId,
+        },
+      });
+    });
 
     const sortedNodes = await step.run("prepare-workflow", async () => {
       const workflow = await prisma.workflow.findUniqueOrThrow({
@@ -61,6 +98,17 @@ export const executeWorkflow = inngest.createFunction(
         userId,
       });
     }
+
+    await step.run("update-execution", async () => {
+      return prisma.execution.update({
+        where: { inngestEventId, workflowId },
+        data: {
+          status: ExecutionStatus.SUCCESS,
+          completedAt: new Date(),
+          output: context,
+        },
+      })
+    });
 
     return {
       workflowId,
