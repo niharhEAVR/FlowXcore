@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
@@ -33,6 +33,33 @@ export function LoginForm() {
         },
     })
 
+    const signInGithub = async () => {
+        await authClient.signIn.social({
+            provider: "github",
+        }, {
+            onSuccess: () => {
+                router.push("/");
+            },
+            onError: () => {
+                toast.error("Something went wrong");
+            },
+        });
+    };
+
+    const signInGoogle = async () => {
+        await authClient.signIn.social({
+            provider: "google",
+        }, {
+            onSuccess: () => {
+                router.push("/");
+            },
+            onError: () => {
+                toast.error("Something went wrong");
+            },
+        });
+    };
+
+
     const onSubmit = async (values: loginFormValues) => {
         await authClient.signIn.email({
             email: values.email,
@@ -43,7 +70,7 @@ export function LoginForm() {
                 router.push("/")
             },
             onError: (x) => {
-                toast.error(x.error.message);
+                toast.error(x.error.message + " Or try signing up with OAuth");
             }
         })
     }
@@ -67,10 +94,10 @@ export function LoginForm() {
                         <form onSubmit={form.handleSubmit(onSubmit)}>
                             <div className="grid gap-6">
                                 <div className="flex flex-col gap-4">
-                                    <Button variant={"outline"} className="w-full" type="button" disabled={isPending}>
+                                    <Button onClick={signInGithub} variant={"outline"} className="w-full" type="button" disabled={isPending}>
                                         <Image alt="github" src={"/github.svg"} height={20} width={20} />
                                         Continue With Github</Button>
-                                    <Button variant={"outline"} className="w-full" type="button" disabled={isPending}>
+                                    <Button onClick={signInGoogle} variant={"outline"} className="w-full" type="button" disabled={isPending}>
                                         <Image alt="google" src={"/google.svg"} height={20} width={20} />
                                         Continue With Google</Button>
                                 </div>

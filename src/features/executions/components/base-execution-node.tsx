@@ -33,7 +33,6 @@ export const BaseExecutionNode = memo(
         onDoubleClick,
         status = "initial",
     }: BaseExecutionNodeProps) => {
-        // Todo: add delete method
 
         const { setNodes, setEdges } = useReactFlow();
 

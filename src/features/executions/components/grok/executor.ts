@@ -5,6 +5,7 @@ import { createXai } from '@ai-sdk/xai';
 import type { NodeExecutor } from "@/features/executions/types";
 import { grokChannel } from "@/inngest/channels/grok";
 import prisma from "@/lib/prisma";
+import { decrypt } from "@/lib/encryption";
 
 Handlebars.registerHelper("json", (context) => {
   const jsonString = JSON.stringify(context, null, 2);
@@ -104,7 +105,7 @@ export const grokExecutor: NodeExecutor<GrokData> = async ({
   }
 
   const grok = createXai({
-    apiKey: credential.value,
+    apiKey: decrypt(credential.value),
   });
 
 
