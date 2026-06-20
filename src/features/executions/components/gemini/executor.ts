@@ -5,6 +5,7 @@ import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import type { NodeExecutor } from "@/features/executions/types";
 import { geminiChannel } from "@/inngest/channels/gemini";
 import prisma from "@/lib/prisma";
+import { decrypt } from "@/lib/encryption";
 
 Handlebars.registerHelper("json", (context) => {
   const jsonString = JSON.stringify(context, null, 2);
@@ -78,7 +79,6 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
     throw new NonRetriableError("Gemini node: User prompt is missing");
   }
 
-  // TODO: Throw if credential is missing
 
   const systemPrompt = data.systemPrompt
     ? Handlebars.compile(data.systemPrompt)(context)
@@ -107,7 +107,7 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
   }
 
   const google = createGoogleGenerativeAI({
-    apiKey: credential.value,
+    apiKey: decrypt(credential.value),
   });
 
   try {

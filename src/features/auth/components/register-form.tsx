@@ -41,6 +41,33 @@ export function RegisterForm() {
         },
     })
 
+    const signUpGithub = async () => {
+        await authClient.signIn.social({
+            provider: "github",
+        }, {
+            onSuccess: () => {
+                router.push("/");
+            },
+            onError: () => {
+                toast.error("Something went wrong");
+            },
+        });
+    };
+
+    const signUpGoogle = async () => {
+        await authClient.signIn.social({
+            provider: "google",
+        }, {
+            onSuccess: () => {
+                router.push("/");
+            },
+            onError: () => {
+                toast.error("Something went wrong");
+            },
+        });
+    };
+
+
     const onSubmit = async (values: registerFormValues) => {
         await authClient.signUp.email({
             name: values.name!,
@@ -52,7 +79,7 @@ export function RegisterForm() {
                 router.push("/")
             },
             onError: (x) => {
-                toast.error(x.error.message);
+                toast.error(x.error.message + " Or try signing up with OAuth");
             }
         })
     }
@@ -76,10 +103,10 @@ export function RegisterForm() {
                         <form onSubmit={form.handleSubmit(onSubmit)}>
                             <div className="grid gap-6">
                                 <div className="flex flex-col gap-4">
-                                    <Button variant={"outline"} className="w-full" type="button" disabled={isPending}>
+                                    <Button onClick={signUpGithub} variant={"outline"} className="w-full" type="button" disabled={isPending}>
                                         <Image alt="github" src={"/github.svg"} height={20} width={20} />
                                         Register With Github</Button>
-                                    <Button variant={"outline"} className="w-full" type="button" disabled={isPending}>
+                                    <Button onClick={signUpGoogle} variant={"outline"} className="w-full" type="button" disabled={isPending}>
                                         <Image alt="google" src={"/google.svg"} height={20} width={20} />
                                         Register With Google</Button>
                                 </div>

@@ -14,7 +14,7 @@ import { slackExecutor } from "../components/slack/executor";
 export const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.INITIAL]: manualTriggerExecutor,
   [NodeType.MANUAL_TRIGGER]: manualTriggerExecutor,
-  [NodeType.HTTP_REQUEST]: httpRequestExecutor, // Todo: fix types
+  [NodeType.HTTP_REQUEST]: httpRequestExecutor,
   [NodeType.GOOGLE_FORM_TRIGGER]: GoogleFormTriggerExecutor,
   [NodeType.STRIPE_TRIGGER]: stripeTriggerExecutor,
   [NodeType.GEMINI]: geminiExecutor,
