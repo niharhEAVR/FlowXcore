@@ -76,12 +76,13 @@ export function RegisterForm() {
             callbackURL: "/workflows",
         }, {
             onSuccess: () => {
-                router.push("/workflows");
+                router.push("/verify-email");
             },
-            onError: (x) => {
-                toast.error(x.error.message + " Or try signing up with OAuth");
-            }
-        })
+
+            onError: (ctx) => {
+                toast.error(ctx.error.message + " Or try signing up with OAuth");
+            },
+        });
     }
 
     const isPending = form.formState.isSubmitting;

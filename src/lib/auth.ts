@@ -6,32 +6,51 @@ import prisma from "@/lib/prisma";
 import { polar, checkout, portal, usage } from "@polar-sh/better-auth";
 import { polarClient } from "./polar";
 
+import { sendVerificationEmail } from "./email";
+
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "sqlite",
     }),
+
     emailAndPassword: {
         enabled: true,
-        autoSignIn: true,
+
+        autoSignIn: false,
+
+        requireEmailVerification: true,
+    },
+
+    emailVerification: {
+        enabled: true,
+
+        sendOnSignUp: true,
+
+        sendVerificationEmail: async ({ user, url }) => {
+            await sendVerificationEmail(user.email, url);
+        },
+
+        autoSignInAfterVerification: true,
+        expiresIn: 3600,
     },
 
     socialProviders: {
-        github: { 
-            clientId: process.env.GITHUB_CLIENT_ID as string, 
+        github: {
+            clientId: process.env.GITHUB_CLIENT_ID as string,
             clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
-        }, 
-        google: { 
-            clientId: process.env.GOOGLE_CLIENT_ID as string, 
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string, 
-        }, 
+        },
+        google: {
+            clientId: process.env.GOOGLE_CLIENT_ID as string,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+        },
     },
 
     account: {
-		accountLinking: {
-			enabled: true,
-			trustedProviders: ["google", "github"], // Add your providers
-		},
-	},
+        accountLinking: {
+            enabled: true,
+            trustedProviders: ["google", "github"], // Add your providers
+        },
+    },
 
     plugins: [
         polar({

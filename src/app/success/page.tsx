@@ -6,6 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, Loader2, ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 
 export default function SuccessPage() {
@@ -50,7 +51,14 @@ export default function SuccessPage() {
       <div className="relative z-10 w-full max-w-md">
         {/* Brand */}
         <div className="mb-6 flex items-center justify-center gap-2.5">
-          <LogoMark />
+          <Image
+            src="/logo.svg"
+            alt="FlowXcore logo"
+            width={220}
+            height={120}
+            priority
+            className="h-6 w-auto"
+          />
           <span className="text-[17px] font-medium tracking-tight text-foreground">
             FlowXcore
           </span>
@@ -108,31 +116,5 @@ export default function SuccessPage() {
         </div>
       </div>
     </div>
-  );
-}
-
-// Three-bar FlowXcore mark (from logo.svg, viewBox widened so the first bar
-// isn't clipped by its negative x coordinate).
-function LogoMark() {
-  return (
-    <svg viewBox="-20 10 220 100" className="h-5 w-auto" aria-hidden="true">
-      <defs>
-        <linearGradient id="fxSuccG1" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#4f46e5" />
-          <stop offset="100%" stopColor="#06b6d4" />
-        </linearGradient>
-        <linearGradient id="fxSuccG2" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#06b6d4" />
-          <stop offset="100%" stopColor="#22c55e" />
-        </linearGradient>
-        <linearGradient id="fxSuccG3" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#22c55e" />
-          <stop offset="100%" stopColor="#a3e635" />
-        </linearGradient>
-      </defs>
-      <path d="M0 10 H60 L40 110 H-20 Z" fill="url(#fxSuccG1)" />
-      <path d="M70 10 H130 L110 110 H50 Z" fill="url(#fxSuccG2)" />
-      <path d="M140 10 H200 L180 110 H120 Z" fill="url(#fxSuccG3)" />
-    </svg>
   );
 }
