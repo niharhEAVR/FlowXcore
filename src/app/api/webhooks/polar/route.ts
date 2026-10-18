@@ -1,7 +1,8 @@
 import { Webhook } from "standardwebhooks";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY!);
+let _resend: Resend | null = null;
+const getResend = () => (_resend ??= new Resend(process.env.RESEND_API_KEY));
 const FROM = process.env.EMAIL_FROM ?? "FlowXcore <no-reply@hire-nihar.info>";
 
 const BRAND = "FlowXcore";
@@ -187,7 +188,7 @@ export async function POST(req: Request) {
   try {
     const { subject, html, text } = buildReceiptEmail(order);
 
-    await resend.emails.send(
+    await getResend().emails.send(
       { from: FROM, to: email, subject, html, text },
       { idempotencyKey: `receipt-${order.id}` }, // retries won't resend
     );

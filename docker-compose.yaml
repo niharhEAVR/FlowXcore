@@ -1,0 +1,57 @@
+services:
+  # Self-hosted Inngest server
+  inngest:
+    image: inngest/inngest
+    container_name: flowxcore-inngest
+    command: >
+      inngest start
+      --sdk-url http://app:3000/api/inngest
+      --sqlite-dir /var/lib/inngest
+    ports:
+      - "8288:8288" # API + dashboard
+      - "8289:8289" # connect gateway
+    environment:
+      INNGEST_EVENT_KEY: ${INNGEST_EVENT_KEY}
+      INNGEST_SIGNING_KEY: ${INNGEST_SIGNING_KEY}
+    volumes:
+      - inngest-data:/var/lib/inngest
+    restart: unless-stopped
+
+  # One-shot job: applies Prisma migrations, then exits
+  migrate:
+    build:
+      context: .
+      target: migrator
+    container_name: flowxcore-migrate
+    env_file: .env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: "no"
+
+  # Next.js app
+  app:
+    build:
+      context: .
+      target: runner
+      args:
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+        SENTRY_AUTH_TOKEN: ${SENTRY_AUTH_TOKEN:-}
+    container_name: flowxcore-app
+    env_file: .env
+    environment:
+      # Point the Inngest SDK at the self-hosted server (overrides .env)
+      INNGEST_BASE_URL: http://inngest:8288
+      INNGEST_DEV: "0"
+    ports:
+      - "3000:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      inngest:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  inngest-data:

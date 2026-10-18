@@ -30,10 +30,9 @@ FlowXcore enables users to:
 
 ### 1. Environment Setup
 
-Create and configure the following files:
+Create and configure the following file:
 
 - `.env` → required environment variables  
-- `.env.sentry` → Sentry configuration (if enabled)
 
 ---
 

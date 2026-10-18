@@ -1,6 +1,8 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY!);
+
+let _resend: Resend | null = null;
+const getResend = () => (_resend ??= new Resend(process.env.RESEND_API_KEY));
 const FROM = process.env.EMAIL_FROM ?? "FlowXcore <no-reply@hire-nihar.info>";
 
 
@@ -9,7 +11,7 @@ export async function sendVerificationEmail(
     url: string,
 ) {
 
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await getResend().emails.send({
         from: FROM,
         to: email,
         subject: "Verify your FlowXcore account",

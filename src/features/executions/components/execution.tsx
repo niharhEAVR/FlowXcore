@@ -19,6 +19,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { useSuspenseExecution } from "@/features/executions/hooks/use-executions";
+import { ExecutionOutput } from "./output";
 
 const getStatusIcon = (status: ExecutionStatus) => {
   switch (status) {
@@ -152,14 +153,7 @@ export const ExecutionView = ({
           </div>
         )}
 
-        {execution.output && (
-          <div className="mt-6 p-4 bg-muted rounded-md">
-            <p className="text-sm font-medium mb-2">Output</p>
-            <pre className="text-xs font-mono overflow-auto">
-              {JSON.stringify(execution.output, null, 2)}
-            </pre>
-          </div>
-        )}
+        {execution.output && <ExecutionOutput output={execution.output} />}
         
       </CardContent>
 
